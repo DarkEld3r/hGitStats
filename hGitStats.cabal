@@ -15,6 +15,7 @@ build-type:          Simple
 cabal-version:       >=1.8
 
 executable hGitStats
-  -- main-is:             
+  main-is:             hGitStats/Main.hs
+  ghc-options:         -Wall -Werror
   -- other-modules:       
   build-depends:       base ==4.6.*

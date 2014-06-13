@@ -1,0 +1,3 @@
+# Files for redirecting output of the corresponding git command.
+_diff
+_status
