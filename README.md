@@ -7,8 +7,8 @@ Dependencies
 ------------
 * gitlib-libgit2 - http://hackage.haskell.org/package/gitlib-libgit2
 
-Compiling
----------
+Building
+--------
 
     $ cabal configure
     $ cabal build
