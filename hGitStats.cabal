@@ -18,4 +18,4 @@ executable hGitStats
   main-is:             hGitStats/Main.hs
   ghc-options:         -Wall -Werror
   -- other-modules:       
-  build-depends:       base ==4.6.*
+  build-depends:       base ==4.6.*, libgit
