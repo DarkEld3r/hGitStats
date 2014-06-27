@@ -5,7 +5,7 @@ Getting statistics for the local Git repository.
 
 Dependencies
 ------------
-* libgit - http://hackage.haskell.org/package/libgit
+* libgit2 - http://libgit2.github.com/
 
 Building
 --------

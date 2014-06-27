@@ -1,4 +1,4 @@
-import Lib.Git
+import GitWrappers
 
 main :: IO ()
 main = do
