@@ -22,5 +22,5 @@ executable hGitStats
   hs-source-dirs:      .
                        gitWrappers
                        hGitStats
-  extra-lib-dirs:      C:/projects/exportTest/Release
-  extra-libraries:     exportTest
+  extra-lib-dirs:      libgit2
+  extra-libraries:     git2
