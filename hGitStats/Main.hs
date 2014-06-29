@@ -2,4 +2,4 @@ import GitWrappers
 
 main :: IO ()
 main = do
-  putStrLn "Test"
+  putStrLn . show . f1 $ 5

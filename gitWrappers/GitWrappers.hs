@@ -1,6 +1,9 @@
-module GitWrappers where
---import Foreign.C
+{-# LANGUAGE ForeignFunctionInterface #-}
 
-test :: IO ()
-test = do
-  putStrLn "Test"
+module GitWrappers where
+
+import Foreign.C
+
+--foreign import ccall "repository.h" git_repository_open :: CDouble -> CDouble
+
+foreign import ccall f1 :: CInt -> CInt
