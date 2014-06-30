@@ -1,5 +1,7 @@
+module Main where
+
 import System.Environment
-import GitWrappers
+import Git
 
 parseCommandLine :: IO String
 parseCommandLine = do
@@ -11,5 +13,5 @@ parseCommandLine = do
 main :: IO ()
 main = do
   path <- parseCommandLine
-  putStrLn path
-  gitRepositoryOpen 
+  repository <- gitRepositoryOpen path
+  putStrLn "OK"
