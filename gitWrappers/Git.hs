@@ -5,9 +5,17 @@ module Git
 
 import Control.Monad
 import Foreign.Ptr
-import Foreign.C.String
+import Foreign.C
 
 import GitWrappers
+
+-- TODO: 'Varargs'
+--checkError :: String -> (IO() -> IO CInt) -> IO ()
+--checkError errorMessage a = do
+--  result <- a
+--  when (0 /= result) $ 
+--    error $ errorMessage ++ " Error code = '" ++ (show result) ++ "'."
+--  return ()
 
 gitRepositoryOpen :: String -> IO GitRepository
 gitRepositoryOpen path = do
