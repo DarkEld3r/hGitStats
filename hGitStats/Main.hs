@@ -1,13 +1,14 @@
 module Main where
 
 import System.Environment
+
 import Git
 
 parseCommandLine :: IO String
 parseCommandLine = do
   args <- getArgs
   case args of
-    [] -> error "Error"
+    [] -> error "Specify path to repository."
     _ -> return . head $ args
 
 main :: IO ()
