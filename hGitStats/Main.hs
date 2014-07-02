@@ -15,4 +15,5 @@ main :: IO ()
 main = do
   path <- parseCommandLine
   repository <- gitRepositoryOpen path
-  putStrLn "OK"
+  gitRepositoryFree repository
+  return ()

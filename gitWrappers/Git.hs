@@ -1,5 +1,6 @@
 module Git
   ( gitRepositoryOpen
+  , gitRepositoryFree
   , gitRevwalkNew
   ) where
 
@@ -23,6 +24,11 @@ gitRepositoryOpen path = do
   checkResult (withCString path $ \path' -> git_repository_open repository path') 
     $ "Unable to open '" ++ path ++ "' repository."
   return repository
+
+gitRepositoryFree :: GitRepository -> IO ()
+gitRepositoryFree repository = do
+  git_repository_free repository
+  return ()
 
 gitRevwalkNew :: GitRepository -> IO GitRevwalk
 gitRevwalkNew repository = do
