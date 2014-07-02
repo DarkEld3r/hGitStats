@@ -8,6 +8,7 @@ module GitWrappers
   , GitRevwalk
   , git_revwalk_new
   , git_revwalk_free
+  , git_revwalk_sorting
   ) where
 
 import Foreign.C
@@ -25,7 +26,19 @@ data CGitRevwalk
 type GitRevwalk = Ptr CGitRevwalk
 
 foreign import ccall git_revwalk_new :: Ptr GitRevwalk -> GitRepository -> IO CInt
-foreign import ccall git_revwalk_free :: GitRevwalk -> IO CInt
+foreign import ccall git_revwalk_free :: GitRevwalk -> IO ()
+
+--newtype WalkSorting = WalkSorting { sorting :: CInt }
+-- #{enum WalkSorting, WalkSorting,
+--  none        = 0,
+--  topological = shiftL 1 0,
+--  time        = shiftL 1 1,
+--  reverse     = shiftL 1 2,
+--}
+
+foreign import ccall git_revwalk_sorting :: GitRevwalk -> CUInt -> IO ()
+
+-- git_revwalk_sorting
 
 -- TODO: FIXME: free functions
 

@@ -37,7 +37,7 @@ gitRevwalkNew repository = do
   checkResult (git_revwalk_new revwalk repository) "Unable to create revision walker."
   return revwalk
 
-gitRevwalkFree :: GitRevwalk -> IO CInt
+gitRevwalkFree :: GitRevwalk -> IO ()
 gitRevwalkFree revwalk = do
   git_revwalk_free revwalk
   return ()
