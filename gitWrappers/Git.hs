@@ -17,7 +17,6 @@ checkResult ioResult errorMessage = do
   result <- ioResult
   when (0 /= result) $ 
     error $ errorMessage ++ " Error code = '" ++ (show result) ++ "'."  
-  return ()
 
 gitRepositoryOpen :: String -> IO GitRepository
 gitRepositoryOpen path = do
@@ -29,7 +28,6 @@ gitRepositoryOpen path = do
 gitRepositoryFree :: GitRepository -> IO ()
 gitRepositoryFree repository = do
   git_repository_free repository
-  return ()
 
 gitRevwalkNew :: GitRepository -> IO GitRevwalk
 gitRevwalkNew repository = do
@@ -40,4 +38,3 @@ gitRevwalkNew repository = do
 gitRevwalkFree :: GitRevwalk -> IO ()
 gitRevwalkFree revwalk = do
   git_revwalk_free revwalk
-  return ()
