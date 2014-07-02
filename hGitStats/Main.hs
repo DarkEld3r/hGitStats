@@ -11,6 +11,9 @@ parseCommandLine = do
     [] -> error "Specify path to repository."
     _ -> return . head $ args
 
+-- TODO: FIXME:
+-- bracket/finally/onException:
+
 main :: IO ()
 main = do
   path <- parseCommandLine

@@ -2,6 +2,7 @@ module Git
   ( gitRepositoryOpen
   , gitRepositoryFree
   , gitRevwalkNew
+  , gitRevwalkFree
   ) where
 
 import Control.Monad
@@ -35,3 +36,8 @@ gitRevwalkNew repository = do
   let revwalk = nullPtr
   checkResult (git_revwalk_new revwalk repository) "Unable to create revision walker."
   return revwalk
+
+gitRevwalkFree :: GitRevwalk -> IO CInt
+gitRevwalkFree revwalk = do
+  git_revwalk_free revwalk
+  return ()

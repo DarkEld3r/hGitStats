@@ -7,6 +7,7 @@ module GitWrappers
   , git_repository_free
   , GitRevwalk
   , git_revwalk_new
+  , git_revwalk_free
   ) where
 
 import Foreign.C
@@ -24,6 +25,7 @@ data CGitRevwalk
 type GitRevwalk = Ptr CGitRevwalk
 
 foreign import ccall git_revwalk_new :: Ptr GitRevwalk -> GitRepository -> IO CInt
+foreign import ccall git_revwalk_free :: GitRevwalk -> IO CInt
 
 -- TODO: FIXME: free functions
 
