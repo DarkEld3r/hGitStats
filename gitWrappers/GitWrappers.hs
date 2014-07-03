@@ -9,6 +9,8 @@ module GitWrappers
   , git_revwalk_new
   , git_revwalk_free
   , git_revwalk_sorting
+  , GitOid
+  , git_revwalk_push
   ) where
 
 import Foreign.C
@@ -37,6 +39,12 @@ foreign import ccall git_revwalk_free :: GitRevwalk -> IO ()
 --}
 
 foreign import ccall git_revwalk_sorting :: GitRevwalk -> CUInt -> IO ()
+
+data CGitOid
+type GitOid = Ptr CGitOid
+
+-- TODO: const pointer?
+foreign import ccall git_revwalk_push :: GitRevwalk -> GitOid -> IO CInt
 
 -- git_revwalk_sorting
 
