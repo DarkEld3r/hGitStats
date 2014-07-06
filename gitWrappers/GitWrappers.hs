@@ -5,8 +5,9 @@ module GitWrappers
   ( GitRepository
   , git_repository_open
   , git_repository_free
-  , GitRevwalk
   , GitOid
+  , git_oid_fromstr
+  , GitRevwalk
   , git_revwalk_new
   , git_revwalk_free
   , git_revwalk_sorting
@@ -24,26 +25,19 @@ type GitRepository = Ptr CGitRepository
 foreign import ccall git_repository_open :: Ptr GitRepository -> CString -> IO CInt
 foreign import ccall git_repository_free :: GitRepository -> IO ()
 
--- git_revwalk
-data CGitRevwalk
-type GitRevwalk = Ptr CGitRevwalk
-
 -- git_oid
 data CGitOid
 type GitOid = Ptr CGitOid
 
+foreign import ccall git_oid_fromstr :: GitOid -> CString -> IO CInt
+
+-- git_revwalk
+data CGitRevwalk
+type GitRevwalk = Ptr CGitRevwalk
+
 foreign import ccall git_revwalk_new :: Ptr GitRevwalk -> GitRepository -> IO CInt
 foreign import ccall git_revwalk_free :: GitRevwalk -> IO ()
-foreign import ccall git_revwalk_next :: GitOid -> GitRevwalk -> CInt ()
-
---newtype WalkSorting = WalkSorting { sorting :: CInt }
--- #{enum WalkSorting, WalkSorting,
---  none        = 0,
---  topological = shiftL 1 0,
---  time        = shiftL 1 1,
---  reverse     = shiftL 1 2,
---}
-
+foreign import ccall git_revwalk_next :: GitOid -> GitRevwalk -> IO CInt
 foreign import ccall git_revwalk_sorting :: GitRevwalk -> CUInt -> IO ()
 
 -- TODO: const pointer?
