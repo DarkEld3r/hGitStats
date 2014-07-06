@@ -6,10 +6,11 @@ module GitWrappers
   , git_repository_open
   , git_repository_free
   , GitRevwalk
+  , GitOid
   , git_revwalk_new
   , git_revwalk_free
   , git_revwalk_sorting
-  , GitOid
+  , git_revwalk_next
   , git_revwalk_push
   ) where
 
@@ -27,8 +28,13 @@ foreign import ccall git_repository_free :: GitRepository -> IO ()
 data CGitRevwalk
 type GitRevwalk = Ptr CGitRevwalk
 
+-- git_oid
+data CGitOid
+type GitOid = Ptr CGitOid
+
 foreign import ccall git_revwalk_new :: Ptr GitRevwalk -> GitRepository -> IO CInt
 foreign import ccall git_revwalk_free :: GitRevwalk -> IO ()
+foreign import ccall git_revwalk_next :: GitOid -> GitRevwalk -> CInt ()
 
 --newtype WalkSorting = WalkSorting { sorting :: CInt }
 -- #{enum WalkSorting, WalkSorting,
@@ -39,9 +45,6 @@ foreign import ccall git_revwalk_free :: GitRevwalk -> IO ()
 --}
 
 foreign import ccall git_revwalk_sorting :: GitRevwalk -> CUInt -> IO ()
-
-data CGitOid
-type GitOid = Ptr CGitOid
 
 -- TODO: const pointer?
 foreign import ccall git_revwalk_push :: GitRevwalk -> GitOid -> IO CInt
