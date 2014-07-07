@@ -17,7 +17,10 @@ cabal-version:       >=1.8
 executable hGitStats
   main-is:             hGitStats/Main.hs
   ghc-options:         -Wall -Werror
-  other-modules:       GitWrappers
+  other-modules:       GitCommon
+                       GitRepository
+                       GitOid
+                       GitRevwalk
   build-depends:       base ==4.6.*
   hs-source-dirs:      .
                        gitWrappers

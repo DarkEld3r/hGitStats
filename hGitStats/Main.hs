@@ -2,7 +2,7 @@ module Main where
 
 import System.Environment
 
-import Git
+import GitRepository
 
 parseCommandLine :: IO String
 parseCommandLine = do
