@@ -18,8 +18,8 @@ executable hGitStats
   main-is:             hGitStats/Main.hs
   ghc-options:         -Wall -Werror
   other-modules:       GitCommon
-                       GitRepository
                        GitOid
+                       GitRepository
                        GitRevwalk
   build-depends:       base ==4.6.*
   hs-source-dirs:      .

@@ -35,3 +35,6 @@ gitReferenceNameToId repository name = do
   checkResult (withCString name $ \name' -> git_reference_name_to_id oid repository name') 
     $ "git_reference_name_to_id(" ++ name ++ ") failed."
   return oid
+
+gitHeadId :: GitRepository -> IO GitOid
+gitHeadId repository = gitReferenceNameToId repository "HEAD"
