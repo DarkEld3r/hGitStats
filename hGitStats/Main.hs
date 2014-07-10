@@ -2,7 +2,7 @@ module Main where
 
 import System.Environment
 
-import GitRepository
+import Repository
 
 parseCommandLine :: IO String
 parseCommandLine = do
@@ -17,6 +17,6 @@ parseCommandLine = do
 main :: IO ()
 main = do
   path <- parseCommandLine
-  repository <- gitRepositoryOpen path
-  gitRepositoryFree repository
+  repository <- repositoryOpen path
+  repositoryFree repository
   return ()

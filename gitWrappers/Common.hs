@@ -1,4 +1,4 @@
-module GitCommon
+module Common
   ( checkResult
   ) where
 
