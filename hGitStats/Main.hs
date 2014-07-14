@@ -23,6 +23,7 @@ main :: IO ()
 main = do
   path <- parseCommandLine
   repository <- repositoryOpen path
+  print "Caling  headId repository"
   headOid <- headId repository
   when (headOid /= nullPtr) (putStrLn $ "test")
   repositoryFree repository
