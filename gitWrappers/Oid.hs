@@ -49,8 +49,11 @@ referenceNameToId repository name = do
   print "before oid <- createOid"
   oid <- createOid
   print "after oid <- createOid"
+  print . show $ oid
   checkResult (withCString name $ \name' -> git_reference_name_to_id oid repository name') 
     $ "git_reference_name_to_id(" ++ name ++ ") failed."
+  print "after git_reference_name_to_id"
+  print . show $ oid
   return oid
 
 headId :: Repository -> IO Oid

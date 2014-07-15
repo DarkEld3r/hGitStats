@@ -2,10 +2,6 @@ module Main where
 
 import System.Environment
 
--- TODO: FIXME: Remove
-import Control.Monad
-import Foreign.Ptr
-
 import Repository
 import Oid
 
@@ -25,6 +21,5 @@ main = do
   repository <- repositoryOpen path
   print "Caling  headId repository"
   headOid <- headId repository
-  when (headOid /= nullPtr) (putStrLn $ "test")
-  repositoryFree repository
+  freeOid headOid
   return ()
