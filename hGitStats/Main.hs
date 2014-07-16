@@ -21,4 +21,5 @@ main = do
   repository <- repositoryOpen path
   headOid <- headId repository
   freeOid headOid
+  repositoryFree repository
   return ()

@@ -47,13 +47,8 @@ foreign import ccall git_reference_name_to_id :: Oid -> Repository -> CString ->
 referenceNameToId :: Repository -> String -> IO Oid
 referenceNameToId repository name = do
   oid <- createOid
-  -- TODO: FIXME
-  print . show $ oid
-  print . show $ repository
   checkResult (withCString name $ \name' -> git_reference_name_to_id oid repository name') 
     $ "git_reference_name_to_id(" ++ name ++ ") failed."
-  -- TODO: FIXME
-  print . show $ oid
   return oid
 
 headId :: Repository -> IO Oid
