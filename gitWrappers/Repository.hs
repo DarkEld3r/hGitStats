@@ -10,6 +10,8 @@ module Repository
 import Foreign.C.Types
 import Foreign.C.String
 import Foreign.Ptr
+import Foreign.Storable
+import Foreign.Marshal.Alloc
 
 import Common
 
@@ -20,11 +22,10 @@ type Repository = Ptr CGitRepository
 foreign import ccall git_repository_open :: Ptr Repository -> CString -> IO CInt
 
 repositoryOpen :: String -> IO Repository
-repositoryOpen path = do
-  let repository = nullPtr
+repositoryOpen path = alloca $ \repository -> do
   checkResult (withCString path $ \path' -> git_repository_open repository path') 
     $ "Unable to open '" ++ path ++ "' repository."
-  return repository
+  peek repository  
 
 foreign import ccall git_repository_free :: Repository -> IO ()
 

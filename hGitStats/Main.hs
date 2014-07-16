@@ -19,7 +19,6 @@ main :: IO ()
 main = do
   path <- parseCommandLine
   repository <- repositoryOpen path
-  print "Caling  headId repository"
   headOid <- headId repository
   freeOid headOid
   return ()
