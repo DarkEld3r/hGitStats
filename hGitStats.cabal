@@ -16,7 +16,7 @@ cabal-version:       >=1.8
 
 executable hGitStats
   main-is:             hGitStats/Main.hs
---  ghc-options:         -Wall -Werror
+  ghc-options:         -Wall -Werror
   other-modules:       Common
                        Oid
                        Repository

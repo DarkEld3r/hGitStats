@@ -20,10 +20,9 @@ type Revwalk = Ptr CGitRevwalk
 foreign import ccall git_revwalk_new :: Ptr Revwalk -> GitRepository -> IO CInt
 
 gitRevwalkNew :: GitRepository -> IO Revwalk
-gitRevwalkNew repository = do
-  let revwalk = nullPtr
+gitRevwalkNew repository = alloca $ \revwalk -> do
   checkResult (git_revwalk_new revwalk repository) "Unable to create revision walker."
-  return revwalk
+  peek revwalk
 
 foreign import ccall git_revwalk_free :: Revwalk -> IO ()
 
