@@ -4,6 +4,7 @@ import System.Environment (getArgs)
 
 import Repository
 import Oid
+import Revwalk
 
 parseCommandLine :: IO String
 parseCommandLine = do
@@ -20,7 +21,7 @@ main = do
   path <- parseCommandLine
   repository <- repositoryOpen path
   headOid <- headId repository
-  freeOid headOid
+  oidFree headOid
 
 -- TODO: FIXME:
 {-|

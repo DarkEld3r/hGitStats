@@ -3,8 +3,8 @@
 
 module Oid
   ( Oid
-  , createOid
-  , freeOid
+  , oidCreate
+  , oidFree
   , oidFromStr
   , referenceNameToId
   , headId
@@ -26,19 +26,19 @@ type Oid = Ptr CGitOid
 oidSize :: Int
 oidSize = 20
 
-createOid :: IO Oid
-createOid = do
+oidCreate :: IO Oid
+oidCreate = do
   mallocBytes oidSize
 
-freeOid :: Oid -> IO ()
-freeOid oid = do
+oidFree :: Oid -> IO ()
+oidFree oid = do
   free oid
 
 foreign import ccall git_oid_fromstr :: Oid -> CString -> IO CInt
 
 oidFromStr :: String -> IO Oid
 oidFromStr hash = do
-  oid <- createOid
+  oid <- oidCreate
   checkResult (withCString hash $ \hash' -> git_oid_fromstr oid hash') 
     $ "git_oid_fromstr(" ++ hash ++ ") failed."
   return oid
@@ -47,7 +47,7 @@ foreign import ccall git_reference_name_to_id :: Oid -> Repository -> CString ->
 
 referenceNameToId :: Repository -> String -> IO Oid
 referenceNameToId repository name = assert (repository /= nullPtr) $ do
-  oid <- createOid
+  oid <- oidCreate
   checkResult (withCString name $ \name' -> git_reference_name_to_id oid repository name') 
     $ "git_reference_name_to_id(" ++ name ++ ") failed."
   return oid
