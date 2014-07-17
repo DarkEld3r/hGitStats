@@ -21,7 +21,10 @@ main = do
   path <- parseCommandLine
   repository <- repositoryOpen path
   headOid <- headId repository
-  oidFree headOid
+  revwalk <- revwalkNew repository
+
+
+
 
 -- TODO: FIXME:
 {-|
@@ -50,5 +53,7 @@ main = do
     git_revwalk_free(walker);
 -}
 
+  revwalkFree revwalk
+  oidFree headOid
   repositoryFree repository
   return ()

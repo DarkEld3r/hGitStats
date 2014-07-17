@@ -3,8 +3,8 @@
 
 module Revwalk
   ( Revwalk
-  , gitRevwalkNew
-  , gitRevwalkFree
+  , revwalkNew
+  , revwalkFree
   ) where
 
 import Foreign.C.Types
@@ -24,15 +24,15 @@ type Revwalk = Ptr CGitRevwalk
 
 foreign import ccall git_revwalk_new :: Ptr Revwalk -> Repository -> IO CInt
 
-gitRevwalkNew :: Repository -> IO Revwalk
-gitRevwalkNew repository = alloca $ \revwalk -> assert (repository /= nullPtr) $ do
+revwalkNew :: Repository -> IO Revwalk
+revwalkNew repository = alloca $ \revwalk -> assert (repository /= nullPtr) $ do
   checkResult (git_revwalk_new revwalk repository) "Unable to create revision walker."
   peek revwalk
 
 foreign import ccall git_revwalk_free :: Revwalk -> IO ()
 
-gitRevwalkFree :: Revwalk -> IO ()
-gitRevwalkFree revwalk = do
+revwalkFree :: Revwalk -> IO ()
+revwalkFree revwalk = do
   git_revwalk_free revwalk
 
 -- TODO: FIXME.
