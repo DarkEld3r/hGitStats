@@ -3,7 +3,7 @@ module Common
   ) where
 
 import Foreign.C.Types
-import Control.Monad
+import Control.Monad (when)
 
 -- Reports error if result is not zero.
 checkResult :: IO CInt -> String -> IO ()

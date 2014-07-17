@@ -1,6 +1,6 @@
 module Main where
 
-import System.Environment
+import System.Environment (getArgs)
 
 import Repository
 import Oid
