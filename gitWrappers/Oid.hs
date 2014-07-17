@@ -14,6 +14,7 @@ import Foreign.C.Types
 import Foreign.C.String
 import Foreign.Ptr
 import Foreign.Marshal.Alloc
+import Control.Exception (assert)
 
 import Common
 import Repository
@@ -45,7 +46,7 @@ oidFromStr hash = do
 foreign import ccall git_reference_name_to_id :: Oid -> Repository -> CString -> IO CInt
 
 referenceNameToId :: Repository -> String -> IO Oid
-referenceNameToId repository name = do
+referenceNameToId repository name = assert (repository /= nullPtr) $ do
   oid <- createOid
   checkResult (withCString name $ \name' -> git_reference_name_to_id oid repository name') 
     $ "git_reference_name_to_id(" ++ name ++ ") failed."
