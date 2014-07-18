@@ -5,7 +5,9 @@ module Revwalk
   ( Revwalk
   , revwalkNew
   , revwalkFree
+  , SortMode(..)
   , revwalkSorting
+  , revwalkPush
   ) where
 
 import Foreign.C.Types
@@ -16,6 +18,7 @@ import Control.Exception (assert)
 
 import Common
 import Repository
+import Oid
 
 -- git_revwalk
 data CGitRevwalk
@@ -48,9 +51,14 @@ data SortMode = NoSort
 
 
 revwalkSorting :: Revwalk -> SortMode -> IO ()
-revwalkSorting revwalk sortMode = do
+revwalkSorting revwalk sortMode = assert (revwalk /= nullPtr) $ do
   git_revwalk_sorting revwalk $ fromIntegral . fromEnum $ sortMode
+
+foreign import ccall git_revwalk_push :: Revwalk -> Oid -> IO CInt
+
+revwalkPush :: Revwalk -> Oid -> IO ()
+revwalkPush revwalk oid = assert (revwalk /= nullPtr && oid /= nullPtr) $ do
+ checkResult (git_revwalk_push revwalk oid) "git_revwalk_push failed."
 
 -- TODO: FIXME.
 --foreign import ccall git_revwalk_next :: Oid -> Revwalk -> IO CInt
---foreign import ccall git_revwalk_push :: Revwalk -> Oid -> IO CInt

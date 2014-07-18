@@ -22,6 +22,7 @@ main = do
   repository <- repositoryOpen path
   headOid <- headId repository
   revwalk <- revwalkNew repository
+  revwalkSorting revwalk Topological
 
 
 
