@@ -5,10 +5,10 @@ module Revwalk
   ( Revwalk
   , revwalkNew
   , revwalkFree
+  , revwalkSorting
   ) where
 
 import Foreign.C.Types
---import Foreign.C.String
 import Foreign.Ptr
 import Foreign.Marshal.Alloc
 import Foreign.Storable
@@ -16,7 +16,6 @@ import Control.Exception (assert)
 
 import Common
 import Repository
---import Oid
 
 -- git_revwalk
 data CGitRevwalk
@@ -35,7 +34,23 @@ revwalkFree :: Revwalk -> IO ()
 revwalkFree revwalk = do
   git_revwalk_free revwalk
 
+foreign import ccall git_revwalk_sorting :: Revwalk -> CUInt -> IO ()
+
+data SortMode = NoSort 
+              | Topological
+              | Time
+              | TimeTopological
+              | Reverse
+              | ReverseTopological
+              | ReverseTime
+              | ReverseTimeTopological
+  deriving (Enum)
+
+
+revwalkSorting :: Revwalk -> SortMode -> IO ()
+revwalkSorting revwalk sortMode = do
+  git_revwalk_sorting revwalk $ fromIntegral . fromEnum $ sortMode
+
 -- TODO: FIXME.
 --foreign import ccall git_revwalk_next :: Oid -> Revwalk -> IO CInt
---foreign import ccall git_revwalk_sorting :: Revwalk -> CUInt -> IO ()
 --foreign import ccall git_revwalk_push :: Revwalk -> Oid -> IO CInt
