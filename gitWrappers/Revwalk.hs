@@ -8,6 +8,7 @@ module Revwalk
   , SortMode(..)
   , revwalkSorting
   , revwalkPush
+  , revwalkNext
   ) where
 
 import Foreign.C.Types
@@ -60,5 +61,9 @@ revwalkPush :: Revwalk -> Oid -> IO ()
 revwalkPush revwalk oid = assert (revwalk /= nullPtr && oid /= nullPtr) $ do
  checkResult (git_revwalk_push revwalk oid) "git_revwalk_push failed."
 
--- TODO: FIXME.
---foreign import ccall git_revwalk_next :: Oid -> Revwalk -> IO CInt
+foreign import ccall git_revwalk_next :: Oid -> Revwalk -> IO CInt
+
+-- TODO GIT_ITEROVER result?
+revwalkNext :: Revwalk -> Oid -> IO CInt
+revwalkNext revwalk oid = assert (revwalk /= nullPtr && oid /= nullPtr) $ do
+  git_revwalk_next oid revwalk

@@ -23,6 +23,7 @@ main = do
   headOid <- headId repository
   revwalk <- revwalkNew repository
   revwalkSorting revwalk Topological
+  revwalkPush revwalk headOid
 
 
 
