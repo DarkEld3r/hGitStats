@@ -21,6 +21,7 @@ executable hGitStats
                        Oid
                        Repository
                        Revwalk
+                       Commit
   build-depends:       base ==4.6.*
   hs-source-dirs:      .
                        gitWrappers
