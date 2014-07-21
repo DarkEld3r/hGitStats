@@ -3,6 +3,7 @@
 
 module Commit
   ( commitLookup
+  , commitFree
   ) where
 
 import Foreign.C.Types
@@ -25,3 +26,9 @@ commitLookup repository oid = alloca $ \commit -> do
   checkResult (git_commit_lookup commit repository oid)
     $ "git_commit_lookup failed."
   peek commit
+
+foreign import ccall git_commit_free :: Commit -> IO ()
+
+commitFree :: Commit -> IO ()
+commitFree commit = do
+  git_commit_free commit
