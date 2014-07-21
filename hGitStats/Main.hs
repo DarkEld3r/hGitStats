@@ -5,6 +5,7 @@ import System.Environment (getArgs)
 import Repository
 import Oid
 import Revwalk
+import Commit
 
 parseCommandLine :: IO String
 parseCommandLine = do
@@ -24,6 +25,7 @@ main = do
   revwalk <- revwalkNew repository
   revwalkSorting revwalk Topological
   revwalkPush revwalk headOid
+  
 
 
 

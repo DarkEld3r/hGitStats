@@ -2,14 +2,13 @@
 {-# LANGUAGE EmptyDataDecls #-}
 
 module Commit
-  (
+  ( commitLookup
   ) where
 
---import Foreign.C.Types
---import Foreign.C.String
---import Foreign.Ptr
---import Foreign.Marshal.Alloc
---import Control.Exception (assert)
+import Foreign.C.Types
+import Foreign.Ptr
+import Foreign.Marshal.Alloc
+import Foreign.Storable
 
 import Common
 import Repository
@@ -21,5 +20,8 @@ type Commit = Ptr CGitCommit
 
 foreign import ccall git_commit_lookup :: Ptr Commit -> Repository -> Oid -> IO CInt
 
-commitlookup :: Repository -> Oid -> IO Commit
-commitlookup repository oid = do
+commitLookup :: Repository -> Oid -> IO Commit
+commitLookup repository oid = alloca $ \commit -> do
+  checkResult (git_commit_lookup commit repository oid)
+    $ "git_commit_lookup failed."
+  peek commit
