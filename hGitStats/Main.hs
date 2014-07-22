@@ -28,6 +28,10 @@ main = do
   -- 
   commit <- commitLookup repository headOid
   
+  -- test
+  message <- commitMessage commit
+  print message
+  
 
 
 
