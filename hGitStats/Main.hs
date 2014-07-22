@@ -22,9 +22,11 @@ main = do
   path <- parseCommandLine
   repository <- repositoryOpen path
   headOid <- headId repository
-  revwalk <- revwalkNew repository
-  revwalkSorting revwalk Topological
-  revwalkPush revwalk headOid
+  walker <- revwalkNew repository
+  revwalkSorting walker Topological
+  revwalkPush walker headOid
+  -- 
+  commit <- commitLookup repository headOid
   
 
 
@@ -57,7 +59,11 @@ main = do
     git_revwalk_free(walker);
 -}
 
-  revwalkFree revwalk
+  --
+  commitFree commit
+  --
+
+  revwalkFree walker
   oidFree headOid
   repositoryFree repository
   return ()
