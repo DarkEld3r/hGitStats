@@ -12,6 +12,7 @@ import Foreign.C.String
 import Foreign.Ptr
 import Foreign.Marshal.Alloc
 import Foreign.Storable
+import Control.Exception (assert)
 
 import Common
 import Repository
@@ -24,7 +25,7 @@ type Commit = Ptr CGitCommit
 foreign import ccall git_commit_lookup :: Ptr Commit -> Repository -> Oid -> IO CInt
 
 commitLookup :: Repository -> Oid -> IO Commit
-commitLookup repository oid = alloca $ \commit -> do
+commitLookup repository oid = alloca $ \commit -> assert (repository /= nullPtr && oid /= nullPtr) $ do
   checkResult (git_commit_lookup commit repository oid)
     $ "git_commit_lookup failed."
   peek commit
@@ -38,7 +39,7 @@ commitFree commit = do
 foreign import ccall git_commit_message :: Commit -> IO CString
 
 commitMessage :: Commit -> IO String
-commitMessage commit = do
+commitMessage commit = assert (commit /= nullPtr) $ do
   result <- git_commit_message commit
   peekCString result
 
