@@ -43,5 +43,23 @@ commitMessage commit = assert (commit /= nullPtr) $ do
   result <- git_commit_message commit
   peekCString result
 
+-- TODO: FIXME
 --const git_signature * git_commit_committer(const git_commit *commit); 
 --foreign import ccall git_commit_committer :: Commit -> IO ???
+
+-- TODO: FIXME
+--  path <- parseCommandLine
+--  repository <- repositoryOpen path
+--  headOid <- headId repository
+--  walker <- revwalkNew repository
+--  revwalkSorting walker Topological
+--  revwalkPush walker headOid
+--  -- 
+--  commit <- commitLookup repository headOid
+--  
+--  -- test
+--  message <- commitMessage commit
+--
+--getCommits :: Repository -> [Commit]
+--getCommits repository = 
+--  []

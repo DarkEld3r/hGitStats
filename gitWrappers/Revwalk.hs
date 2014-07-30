@@ -64,6 +64,39 @@ revwalkPush revwalk oid = assert (revwalk /= nullPtr && oid /= nullPtr) $ do
 foreign import ccall git_revwalk_next :: Oid -> Revwalk -> IO CInt
 
 -- TODO GIT_ITEROVER result?
-revwalkNext :: Revwalk -> Oid -> IO CInt
-revwalkNext revwalk oid = assert (revwalk /= nullPtr && oid /= nullPtr) $ do
-  git_revwalk_next oid revwalk
+-- TODO: return Maybe Oid
+--revwalkNext :: Revwalk -> IO (Maybe Oid)
+--revwalkNext revwalk = assert (revwalk /= nullPtr) $ do
+--  oid <- oidCreate
+--  result <- git_revwalk_next oid revwalk
+--  case result of
+--    0 -> Just (peek oid)
+--    _ -> return Nothing
+
+revwalkNextImpl :: Revwalk -> Oid -> Maybe Oid
+revwalkNextImpl revwalk oid =
+  result <- git_revwalk_next oid revwalk
+  case result of
+    0 -> Just (peek oid)
+    _ -> return Nothing
+
+revwalkNext :: Revwalk -> IO (Maybe Oid)
+revwalkNext = oidCreate <$> revwalkNextImpl
+
+--revwalkNext :: Revwalk -> IO (Maybe Oid)
+--revwalkNext revwalk = do
+--  oid <- oidCreate
+--  result <- git_revwalk_next oid revwalk
+--  case result of
+--    0 -> Just (peek oid)
+--    _ -> return Nothing
+
+
+--oidCreate
+--revwalkNext revwalk = alloca $ \oid -> assert (revwalk /= nullPtr) $ do
+--  result <- git_revwalk_next oid revwalk
+--  case result of
+--    0 -> Just (peek oid)
+--    _ -> return Nothing
+--revwalkNext revwalk oid = assert (revwalk /= nullPtr && oid /= nullPtr) $ do
+--  git_revwalk_next oid revwalk
