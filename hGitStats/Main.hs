@@ -31,6 +31,20 @@ main = do
   -- test
   message <- commitMessage commit
   print message
+
+--  -- test 2
+--  nextOid <- revwalkNext walker
+--  nextCommit <- commitLookup repository nextOid
+--  nextMessage <- commitMessage nextCommit
+--  print nextMessage
+
+--  -- test 3
+--  nextOid2 <- revwalkNext walker
+--  nextCommit2 <- commitLookup repository nextOid2
+--  nextMessage2 <- commitMessage nextCommit2
+--  print nextMessage2
+  testVal <- revwalkNext walker
+  print testVal
   
 
 
