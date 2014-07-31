@@ -84,6 +84,10 @@ getCommits :: Revwalk -> IO [IO Oid]
 getCommits revwalk = assert (revwalk /= nullPtr) $ do
   result <- revwalkNext revwalk
   case result of
---    Just oid -> oid : getCommits revwalk
-    Just _ -> return []
+    -- TODO: functor/applicative functor?
+    Just oid -> (return oid) : getCommits revwalk
     Nothing  -> return []
+
+-- TODO: 
+--getCommitsTest :: IO [IO Oid] -> [Oid]
+--getCommitsTest ioOids = 
