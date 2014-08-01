@@ -9,7 +9,8 @@ module Revwalk
   , revwalkSorting
   , revwalkPush
   , revwalkNext
-  , getCommits
+  , nextOids
+  , topologicalOids
   ) where
 
 import Foreign.C.Types
@@ -72,22 +73,22 @@ revwalkNext revwalk = assert (revwalk /= nullPtr) $ do
     0 -> return (Just oid)
     _ -> return Nothing
 
--- TODO sequence
---getCommits :: Revwalk -> IO [Oid]
---getCommits revwalk = assert (revwalk /= nullPtr) $ do
---  result <- revwalkNext revwalk
---  case result of
---    Just oid -> oid : getCommits revwalk
---    Nothing  -> return []
-
-getCommits :: Revwalk -> IO [IO Oid]
-getCommits revwalk = assert (revwalk /= nullPtr) $ do
+nextOids :: Revwalk -> IO [Oid]
+nextOids revwalk = assert (revwalk /= nullPtr) $ do
   result <- revwalkNext revwalk
   case result of
-    -- TODO: functor/applicative functor?
-    Just oid -> (return oid) : getCommits revwalk
+    Just oid -> fmap ((:) oid) (nextOids revwalk)
     Nothing  -> return []
 
--- TODO: 
---getCommitsTest :: IO [IO Oid] -> [Oid]
---getCommitsTest ioOids = 
+topologicalOids :: Repository -> IO [Oid]
+topologicalOids repository = assert (repository /= nullPtr) $ do
+  headOid <- headId repository
+  walker <- revwalkNew repository
+  revwalkSorting walker Topological
+  revwalkPush walker headOid
+-- TODO: FIXME: withOid?
+--  nextCommits walker
+  result <- nextOids walker
+  revwalkFree walker
+  oidFree headOid
+  return result

@@ -31,8 +31,11 @@ oidCreate = do
   mallocBytes oidSize
 
 oidFree :: Oid -> IO ()
-oidFree oid = do
+oidFree oid =
   free oid
+
+-- TODO: bracket
+-- TODO: withOid
 
 foreign import ccall git_oid_fromstr :: Oid -> CString -> IO CInt
 
