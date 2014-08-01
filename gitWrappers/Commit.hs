@@ -3,6 +3,7 @@
 
 module Commit
   ( commitLookup
+  , commitsLookup
   , commitFree
   , commitMessage
   ) where
@@ -29,6 +30,10 @@ commitLookup repository oid = alloca $ \commit -> assert (repository /= nullPtr 
   checkResult (git_commit_lookup commit repository oid)
     $ "git_commit_lookup failed."
   peek commit
+
+commitsLookup :: Repository -> [Oid] -> IO [Commit]
+commitsLookup repository oids = assert (repository /= nullPtr)
+  mapM (commitLookup repository) oids  
 
 foreign import ccall git_commit_free :: Commit -> IO ()
 

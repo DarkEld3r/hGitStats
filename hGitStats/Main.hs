@@ -23,7 +23,7 @@ main = do
   repository <- repositoryOpen path
 
   oids <- topologicalOids repository
-  commits <- mapM (commitLookup repository) oids
+  commits <- commitsLookup repository oids
   messages <- mapM commitMessage commits
 
   print (take 5 messages)
