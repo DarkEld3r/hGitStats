@@ -1,7 +1,7 @@
 hGitStats
 =========
 
-Getting statistics for the local Git repository.
+Statistics for the local Git repository.
 
 Dependencies
 ------------
