@@ -7,6 +7,8 @@ import Oid
 import Revwalk
 import Commit
 
+-- TODO: 'struct' (data) with results?
+-- TODO: http://www.haskell.org/haskellwiki/Command_line_option_parsers
 parseCommandLine :: IO String
 parseCommandLine = do
   args <- getArgs
