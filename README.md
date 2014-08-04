@@ -5,6 +5,7 @@ Statistics for the local Git repository.
 
 Dependencies
 ------------
+* CmdArgs - https://github.com/ndmitchell/cmdargs
 * libgit2 - http://libgit2.github.com/
 
 Building
