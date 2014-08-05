@@ -15,16 +15,10 @@ data CmdParams = CmdParams
   }
   deriving (Show, Data, Typeable)
 
---cmdParams :: Mode (CmdArgs CmdParams)
---cmdParams = cmdArgsMode $ CmdParams 
---  { path = def &= typFile &= help "Path to repository"
---  , count = def
---  }
-
 cmdParams :: CmdParams
 cmdParams = CmdParams 
-  { path = def &= typFile &= help "Path to repository"
-  , count = def
+  { path = def &= argPos 0 &= typ "<path to repository>"
+  , count = def &= help "Show commits count"
   }
 
 
@@ -33,7 +27,6 @@ cmdParams = CmdParams
 
 main :: IO ()
 main = do
---  params <- cmdArgsRun cmdParams
   params <- cmdArgs cmdParams
   repository <- repositoryOpen . path $ params
 
