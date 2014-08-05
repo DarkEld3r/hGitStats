@@ -1,28 +1,41 @@
+{-# LANGUAGE DeriveDataTypeable #-}
+
 module Main where
 
-import System.Environment (getArgs)
+import System.Console.CmdArgs
 
 import Repository
 import Oid
 import Revwalk
 import Commit
 
--- TODO: 'struct' (data) with results?
--- TODO: http://www.haskell.org/haskellwiki/Command_line_option_parsers
-parseCommandLine :: IO String
-parseCommandLine = do
-  args <- getArgs
-  case args of
-    [] -> error "Specify path to repository."
-    _ -> return . head $ args
+data CmdParams = CmdParams
+  { path :: FilePath
+  , count :: Bool
+  }
+  deriving (Show, Data, Typeable)
+
+--cmdParams :: Mode (CmdArgs CmdParams)
+--cmdParams = cmdArgsMode $ CmdParams 
+--  { path = def &= typFile &= help "Path to repository"
+--  , count = def
+--  }
+
+cmdParams :: CmdParams
+cmdParams = CmdParams 
+  { path = def &= typFile &= help "Path to repository"
+  , count = def
+  }
+
 
 -- TODO: FIXME:
 -- bracket/finally/onException:
 
 main :: IO ()
 main = do
-  path <- parseCommandLine
-  repository <- repositoryOpen path
+--  params <- cmdArgsRun cmdParams
+  params <- cmdArgs cmdParams
+  repository <- repositoryOpen . path $ params
 
   oids <- topologicalOids repository
   commits <- commitsLookup repository oids
