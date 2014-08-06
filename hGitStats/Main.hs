@@ -3,6 +3,7 @@
 module Main where
 
 import System.Console.CmdArgs
+import Control.Monad (when)
 
 import Repository
 import Oid
@@ -29,8 +30,12 @@ main :: IO ()
 main = do
   params <- cmdArgs cmdParams
   repository <- repositoryOpen . path $ params
-
   oids <- topologicalOids repository
+
+  when (count params) $
+    putStrLn ((++) "Total commitst count: " $ show . length $ oids)
+
+
   commits <- commitsLookup repository oids
   messages <- mapM commitMessage commits
 
