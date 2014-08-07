@@ -7,6 +7,7 @@ module Repository
   , repositoryFree
   , withRepositoryOpen
   , repositoryNamespace
+  , repositoryPath
   ) where
 
 import Foreign.C.Types
@@ -44,3 +45,9 @@ foreign import ccall git_repository_get_namespace :: Repository -> IO CString
 repositoryNamespace :: Repository -> IO String
 repositoryNamespace repository = assert (repository /= nullPtr)
   git_repository_get_namespace repository >>= peekCString
+
+foreign import ccall git_repository_path :: Repository -> IO CString
+
+repositoryPath :: Repository -> IO String
+repositoryPath repository = assert (repository /= nullPtr)
+  git_repository_path repository >>= peekCString
