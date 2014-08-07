@@ -6,6 +6,7 @@ module Repository
   , repositoryOpen
   , repositoryFree
   , withRepositoryOpen
+  , repositoryNamespace
   ) where
 
 import Foreign.C.Types
@@ -13,7 +14,7 @@ import Foreign.C.String
 import Foreign.Ptr
 import Foreign.Storable
 import Foreign.Marshal.Alloc
-import Control.Exception (bracket)
+import Control.Exception (assert, bracket)
 
 import Common
 
@@ -37,3 +38,9 @@ repositoryFree repository = do
 
 withRepositoryOpen :: String -> (Repository -> IO a) -> IO a
 withRepositoryOpen path = bracket (repositoryOpen path) repositoryFree
+
+foreign import ccall git_repository_get_namespace :: Repository -> IO CString
+
+repositoryNamespace :: Repository -> IO String
+repositoryNamespace repository = assert (repository /= nullPtr)
+  git_repository_get_namespace repository >>= peekCString

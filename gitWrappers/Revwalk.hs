@@ -18,8 +18,7 @@ import Foreign.C.Types
 import Foreign.Ptr
 import Foreign.Marshal.Alloc
 import Foreign.Storable
-import Control.Exception (assert)
-import Control.Exception (bracket)
+import Control.Exception (assert, bracket)
 
 import Common
 import Repository
