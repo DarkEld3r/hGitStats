@@ -8,6 +8,7 @@ module Repository
   , withRepositoryOpen
   , repositoryNamespace
   , repositoryPath
+  , repositoryIsEmpty
   ) where
 
 import Foreign.C.Types
@@ -51,3 +52,13 @@ foreign import ccall git_repository_path :: Repository -> IO CString
 repositoryPath :: Repository -> IO String
 repositoryPath repository = assert (repository /= nullPtr)
   git_repository_path repository >>= peekCString
+
+foreign import ccall git_repository_is_empty :: Repository -> IO CInt
+
+repositoryIsEmpty :: Repository -> IO Bool
+repositoryIsEmpty repository = assert (repository /= nullPtr) $ do
+  result <- git_repository_is_empty repository
+  case result of
+    1 -> return True
+    0 -> return False
+    _ -> error "Repository is corrupted."
