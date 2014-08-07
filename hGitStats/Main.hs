@@ -22,26 +22,31 @@ cmdParams = CmdParams
   , count = def &= help "Show commits count"
   }
 
-process :: Repository -> IO ()
-process repository = do
-  oids <- topologicalOids repository
-  putStrLn ((++) "Total commitst count: " $ show . length $ oids)
+delimiter :: String
+delimiter = "-----------------------------------------"
+
+printGeneralInformation :: Repository -> IO ()
+printGeneralInformation repository = do
+  putStrLn delimiter
+  putStrLn "Repository"
+
+printCommitsCount :: [Oid] -> IO ()
+printCommitsCount oids = do
+  putStrLn delimiter
+  putStrLn ((++) "Total commitst count: " $ show . length $ oids)  
 
 main :: IO ()
 main = do
   params <- cmdArgs cmdParams
-{-
-  withRepositoryOpen (path params) process
---    putStrLn ((++) "Total commitst count: " $ show . length $ oids)
--}
-
-
-
   repository <- repositoryOpen . path $ params
+
+  -- General repository information.
+  printGeneralInformation repository
+
   oids <- topologicalOids repository
 
-  when (count params) $
-    putStrLn ((++) "Total commitst count: " $ show . length $ oids)
+  -- Commits count.
+  when (count params) $ printCommitsCount oids
 
 
   commits <- commitsLookup repository oids
