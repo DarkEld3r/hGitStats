@@ -5,6 +5,7 @@ module Revwalk
   ( Revwalk
   , revwalkNew
   , revwalkFree
+  , withRevwalk
   , SortMode(..)
   , revwalkSorting
   , revwalkPush
@@ -18,6 +19,7 @@ import Foreign.Ptr
 import Foreign.Marshal.Alloc
 import Foreign.Storable
 import Control.Exception (assert)
+import Control.Exception (bracket)
 
 import Common
 import Repository
@@ -39,6 +41,9 @@ foreign import ccall git_revwalk_free :: Revwalk -> IO ()
 revwalkFree :: Revwalk -> IO ()
 revwalkFree revwalk = do
   git_revwalk_free revwalk
+
+withRevwalk :: Repository -> (Revwalk -> IO a) -> IO a
+withRevwalk repository = bracket (revwalkNew repository) revwalkFree
 
 foreign import ccall git_revwalk_sorting :: Revwalk -> CUInt -> IO ()
 
@@ -80,15 +85,13 @@ nextOids revwalk = assert (revwalk /= nullPtr) $ do
     Just oid -> fmap ((:) oid) (nextOids revwalk)
     Nothing  -> return []
 
+nextTopologicalOids :: Repository -> Oid -> IO [Oid]
+nextTopologicalOids repository oid = assert (repository /= nullPtr && oid /= nullPtr) $ do
+  withRevwalk repository $ \walker -> do
+    revwalkSorting walker Topological
+    revwalkPush walker oid
+    nextOids walker
+
 topologicalOids :: Repository -> IO [Oid]
 topologicalOids repository = assert (repository /= nullPtr) $ do
-  headOid <- headId repository
-  walker <- revwalkNew repository
-  revwalkSorting walker Topological
-  revwalkPush walker headOid
--- TODO: FIXME: withOid?
---  nextCommits walker
-  result <- nextOids walker
-  revwalkFree walker
-  oidFree headOid
-  return result
+  withHeadId repository (nextTopologicalOids repository)

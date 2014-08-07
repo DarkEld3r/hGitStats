@@ -22,13 +22,21 @@ cmdParams = CmdParams
   , count = def &= help "Show commits count"
   }
 
-
--- TODO: FIXME:
--- bracket/finally/onException:
+process :: Repository -> IO ()
+process repository = do
+  oids <- topologicalOids repository
+  putStrLn ((++) "Total commitst count: " $ show . length $ oids)
 
 main :: IO ()
 main = do
   params <- cmdArgs cmdParams
+{-
+  withRepositoryOpen (path params) process
+--    putStrLn ((++) "Total commitst count: " $ show . length $ oids)
+-}
+
+
+
   repository <- repositoryOpen . path $ params
   oids <- topologicalOids repository
 

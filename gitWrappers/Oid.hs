@@ -5,9 +5,11 @@ module Oid
   ( Oid
   , oidCreate
   , oidFree
+  , withOid
   , oidFromStr
   , referenceNameToId
   , headId
+  , withHeadId
   ) where
 
 import Foreign.C.Types
@@ -15,6 +17,7 @@ import Foreign.C.String
 import Foreign.Ptr
 import Foreign.Marshal.Alloc
 import Control.Exception (assert)
+import Control.Exception (bracket)
 
 import Common
 import Repository
@@ -34,8 +37,8 @@ oidFree :: Oid -> IO ()
 oidFree oid =
   free oid
 
--- TODO: bracket
--- TODO: withOid
+withOid :: (Oid -> IO a) -> IO a
+withOid = bracket oidCreate oidFree
 
 foreign import ccall git_oid_fromstr :: Oid -> CString -> IO CInt
 
@@ -57,3 +60,6 @@ referenceNameToId repository name = assert (repository /= nullPtr) $ do
 
 headId :: Repository -> IO Oid
 headId repository = referenceNameToId repository "HEAD"
+
+withHeadId :: Repository -> (Oid -> IO a) -> IO a
+withHeadId repository = bracket (headId repository) oidFree
