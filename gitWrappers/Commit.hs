@@ -56,8 +56,35 @@ commitMessage commit = assert (commit /= nullPtr) $ do
   result <- git_commit_message commit
   peekCString result
 
--- TODO: FIXME
--- const git_signature * git_commit_author(const git_commit *commit); 
+-- /** Time in a signature */
+--typedef struct git_time {
+--	git_time_t time; /**< time in seconds from epoch */
+--	int offset; /**< timezone offset, in minutes */
+--} git_time;
+--
+-- /** An action signature (e.g. for committers, taggers, etc) */
+--typedef struct git_signature {
+--	char *name; /**< full name of the author */
+--	char *email; /**< email of the author */
+--	git_time when; /**< time when the action happened */
+--} git_signature;
 
---const git_signature * git_commit_committer(const git_commit *commit); 
---foreign import ccall git_commit_committer :: Commit -> IO ???
+data CGitSignature = CGitSignature CInt CChar
+  deriving (Show, Read, Eq)
+type GitSignature = Ptr CGitSignature
+
+instance Storable CGitSignature where
+  sizeOf _ = 24
+  alignment = sizeOf
+  peek ptr = do
+    name <- peekByteOff ptr 0
+    email <- peekByteOff ptr 4
+    time <- peekByteOff ptr 8
+    return (CGitSignature name email)
+
+foreign import ccall git_commit_committer :: Commit -> GitSignature
+
+commiterName :: Commit -> IO String
+commiterName commit = assert (commit /= nullPtr) $ do
+  result <- git_commit_committer commit
+  name $ peek result
