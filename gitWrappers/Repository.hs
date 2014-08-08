@@ -46,9 +46,9 @@ foreign import ccall git_repository_get_namespace :: Repository -> IO CString
 repositoryNamespace :: Repository -> IO String
 repositoryNamespace repository = assert (repository /= nullPtr) $ do
   result <- git_repository_get_namespace repository
-  case result of
---    nullPtr -> return ""
-    _ -> peekCString result
+  if (result == nullPtr) 
+    then return ""
+    else peekCString result
 
 foreign import ccall git_repository_path :: Repository -> IO CString
 
