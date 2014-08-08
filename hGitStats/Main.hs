@@ -6,13 +6,13 @@ import System.Console.CmdArgs
 import Control.Monad (when)
 
 import Repository
-import Oid
-import Revwalk
 import Commit
 
 data CmdParams = CmdParams
   { path :: FilePath
   , count :: Bool
+  , messages :: Bool 
+  , statistics :: Bool
   }
   deriving (Show, Data, Typeable)
 
@@ -20,6 +20,8 @@ cmdParams :: CmdParams
 cmdParams = CmdParams 
   { path = def &= argPos 0 &= typ "<path to repository>"
   , count = def &= help "Show commits count"
+  , messages = def &= help "Show commits messages"
+  , statistics = def &= help "Show committers statistics"
   }
 
 delimiter :: String
@@ -28,37 +30,43 @@ delimiter = "-----------------------------------------"
 printGeneralInformation :: Repository -> IO ()
 printGeneralInformation repository = do
   putStrLn delimiter
-  repositoryNamespace repository >>= putStrLn
+  putStr "Repository path: "
   repositoryPath repository >>= putStrLn
+  putStr "Repository namespace: "  
+  repositoryNamespace repository >>= putStrLn
+  putStr "Empty repository: "  
   repositoryIsEmpty repository >>= print
---  namespace <- repositoryNamespace repository
---  putStrLn $ "Repository namespace: " ++ namespace
 
-printCommitsCount :: [Oid] -> IO ()
-printCommitsCount oids = do
+printCommitsCount :: [Commit] -> IO ()
+printCommitsCount commits = do
   putStrLn delimiter
-  putStrLn ((++) "Total commitst count: " $ show . length $ oids)  
+  putStrLn ((++) "Total commits count: " $ show . length $ commits)  
+
+printMessages :: [Commit] -> IO ()
+printMessages commits = do
+  putStrLn delimiter
+  mapM commitMessage commits >>= mapM_ print
+
+printStatistics :: [Commit] -> IO ()
+printStatistics commits = do
+  putStrLn delimiter
+  -- TODO: FIXME:
+  print commits
 
 main :: IO ()
 main = do
   params <- cmdArgs cmdParams
   repository <- repositoryOpen . path $ params
-
-  -- General repository information.
   printGeneralInformation repository
 
-  oids <- topologicalOids repository
+  -- We need commits for many operations.
+  commits <- topologicalCommits repository
 
-  -- Commits count.
-  when (count params) $ printCommitsCount oids
-
-
-  commits <- commitsLookup repository oids
-  messages <- mapM commitMessage commits
-
-  print (take 5 messages)
+  -- Process parameters.
+  when (count params) $ printCommitsCount commits
+  when (messages params) $ printMessages commits
+  when (statistics params) $ printStatistics commits
 
   -- Free resources.  
   mapM_ commitFree commits
-  mapM_ oidFree oids
   repositoryFree repository

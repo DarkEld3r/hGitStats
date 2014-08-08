@@ -61,4 +61,5 @@ headId :: Repository -> IO Oid
 headId repository = referenceNameToId repository "HEAD"
 
 withHeadId :: Repository -> (Oid -> IO a) -> IO a
-withHeadId repository = bracket (headId repository) oidFree
+withHeadId repository = assert (repository /= nullPtr)
+  bracket (headId repository) oidFree

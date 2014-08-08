@@ -2,9 +2,11 @@
 {-# LANGUAGE EmptyDataDecls #-}
 
 module Commit
-  ( commitLookup
+  ( Commit
+  , commitLookup
   , commitsLookup
   , commitFree
+  , topologicalCommits
   , commitMessage
   ) where
 
@@ -18,6 +20,7 @@ import Control.Exception (assert)
 import Common
 import Repository
 import Oid
+import Revwalk
 
 -- git_oid
 data CGitCommit
@@ -41,6 +44,11 @@ commitFree :: Commit -> IO ()
 commitFree commit = do
   git_commit_free commit
 
+topologicalCommits :: Repository -> IO [Commit]
+topologicalCommits repository = assert (repository /= nullPtr) $ do
+  withTopologicalOids repository $ \oids -> do
+    commitsLookup repository oids
+
 foreign import ccall git_commit_message :: Commit -> IO CString
 
 commitMessage :: Commit -> IO String
@@ -49,5 +57,7 @@ commitMessage commit = assert (commit /= nullPtr) $ do
   peekCString result
 
 -- TODO: FIXME
+-- const git_signature * git_commit_author(const git_commit *commit); 
+
 --const git_signature * git_commit_committer(const git_commit *commit); 
 --foreign import ccall git_commit_committer :: Commit -> IO ???

@@ -12,6 +12,7 @@ module Revwalk
   , revwalkNext
   , nextOids
   , topologicalOids
+  , withTopologicalOids
   ) where
 
 import Foreign.C.Types
@@ -94,3 +95,6 @@ nextTopologicalOids repository oid = assert (repository /= nullPtr && oid /= nul
 topologicalOids :: Repository -> IO [Oid]
 topologicalOids repository = assert (repository /= nullPtr) $ do
   withHeadId repository (nextTopologicalOids repository)
+
+withTopologicalOids :: Repository -> ([Oid] -> IO a) -> IO a
+withTopologicalOids repository = bracket (topologicalOids repository) (mapM_ oidFree)
