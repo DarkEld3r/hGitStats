@@ -28,9 +28,10 @@ delimiter = "-----------------------------------------"
 printGeneralInformation :: Repository -> IO ()
 printGeneralInformation repository = do
   putStrLn delimiter
-  print repository
-  namespace <- repositoryNamespace repository
-  print namespace
+  repositoryNamespace repository >>= putStrLn
+  repositoryPath repository >>= putStrLn
+  repositoryIsEmpty repository >>= print
+--  namespace <- repositoryNamespace repository
 --  putStrLn $ "Repository namespace: " ++ namespace
 
 printCommitsCount :: [Oid] -> IO ()

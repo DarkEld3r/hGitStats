@@ -64,4 +64,4 @@ repositoryIsEmpty repository = assert (repository /= nullPtr) $ do
   case result of
     1 -> return True
     0 -> return False
-    _ -> error "Repository is corrupted."
+    code -> error $ "Repository is corrupted. Error code: '" ++ show code ++ "'."
