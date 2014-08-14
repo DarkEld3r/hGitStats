@@ -8,6 +8,8 @@ module Commit
   , commitFree
   , topologicalCommits
   , commitMessage
+  , GitSignature
+  , commiterName
   ) where
 
 import Foreign.C.Types
@@ -56,35 +58,27 @@ commitMessage commit = assert (commit /= nullPtr) $ do
   result <- git_commit_message commit
   peekCString result
 
--- /** Time in a signature */
---typedef struct git_time {
---	git_time_t time; /**< time in seconds from epoch */
---	int offset; /**< timezone offset, in minutes */
---} git_time;
---
--- /** An action signature (e.g. for committers, taggers, etc) */
---typedef struct git_signature {
---	char *name; /**< full name of the author */
---	char *email; /**< email of the author */
---	git_time when; /**< time when the action happened */
---} git_signature;
+data CGitTime
 
-data CGitSignature = CGitSignature CInt CChar
-  deriving (Show, Read, Eq)
-type GitSignature = Ptr CGitSignature
+instance Storable CGitTime where
+  sizeOf _ = 16
+  alignment = sizeOf
+
+data CGitSignature = CGitSignature
+  { signatureName :: CString
+  , signatureEmail :: CString
+  , gitTime :: CGitTime
+  }
 
 instance Storable CGitSignature where
-  sizeOf _ = 24
-  alignment = sizeOf
-  peek ptr = do
-    name <- peekByteOff ptr 0
-    email <- peekByteOff ptr 4
-    time <- peekByteOff ptr 8
-    return (CGitSignature name email)
 
-foreign import ccall git_commit_committer :: Commit -> GitSignature
+type GitSignature = Ptr CGitSignature
+
+foreign import ccall git_commit_committer :: Commit -> IO GitSignature
 
 commiterName :: Commit -> IO String
-commiterName commit = assert (commit /= nullPtr) $ do
-  result <- git_commit_committer commit
-  name $ peek result
+commiterName commit = do
+  result <- git_commit_committer commit >>= peek
+  peekCString . signatureName $ result
+
+-- TODO: FIXME: git_signature_free
