@@ -76,6 +76,11 @@ type GitSignature = Ptr CGitSignature
 
 foreign import ccall git_commit_committer :: Commit -> IO GitSignature
 
+-- TODO: FIXME: withCommitCommiter
+-- TODO: FIXME:
+------ peekElemOff?
+------ peekByteOff?
+
 commiterName :: Commit -> IO String
 commiterName commit = do
   result <- git_commit_committer commit >>= peek
