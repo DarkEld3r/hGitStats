@@ -10,6 +10,7 @@ module Commit
   , commitMessage
   , GitSignature
   , commiterName
+  , commiterEmail
   ) where
 
 import Foreign.C.Types
@@ -67,10 +68,12 @@ instance Storable CGitTime where
 data CGitSignature = CGitSignature
   { signatureName :: CString
   , signatureEmail :: CString
-  , gitTime :: CGitTime
+  , signatureTime :: CGitTime
   }
 
 instance Storable CGitSignature where
+  sizeOf _ = 24
+  alignment = sizeOf
 
 type GitSignature = Ptr CGitSignature
 
@@ -85,5 +88,16 @@ commiterName :: Commit -> IO String
 commiterName commit = do
   result <- git_commit_committer commit >>= peek
   peekCString . signatureName $ result
+
+commiterEmail :: Commit -> IO String
+commiterEmail commit = do
+  result <- git_commit_committer commit >>= peek
+  peekCString . signatureEmail $ result
+
+--commitTime :: Commit -> IO CGitTime
+--commitTime commit = do
+--  result <- git_commit_committer commit >>= peek
+--  peekCString . signatureTime $ result
+
 
 -- TODO: FIXME: git_signature_free
