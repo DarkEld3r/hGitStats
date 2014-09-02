@@ -8,7 +8,6 @@ module Commit
   , commitFree
   , topologicalCommits
   , commitMessage
-  , GitSignature
   , commiterName
   , commiterEmail
   ) where
@@ -59,6 +58,26 @@ commitMessage commit = assert (commit /= nullPtr) $ do
   result <- git_commit_message commit
   peekCString result
 
+data CGitSignature
+
+instance Storable CGitSignature where
+  sizeOf _ = 24
+  alignment = sizeOf
+
+foreign import ccall git_commit_committer :: Commit -> IO CGitSignature
+
+commiterName :: Commit -> IO String
+-- assert (commit /= nullPtr)
+commiterName commit = do
+  result <- git_commit_committer commit
+  return ""
+
+commiterEmail :: Commit -> IO String
+-- assert (commit /= nullPtr)
+commiterEmail _ = return ""
+
+{-
+
 data CGitTime
 
 instance Storable CGitTime where
@@ -101,3 +120,5 @@ commiterEmail commit = do
 
 
 -- TODO: FIXME: git_signature_free
+
+-}
