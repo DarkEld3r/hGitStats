@@ -64,7 +64,7 @@ instance Storable CGitSignature where
   sizeOf _ = 24
   alignment = sizeOf
 
-foreign import ccall git_commit_committer :: Commit -> IO CGitSignature
+foreign import ccall git_commit_committer :: Commit -> IO (Ptr CGitSignature)
 
 commiterName :: Commit -> IO String
 -- assert (commit /= nullPtr)
