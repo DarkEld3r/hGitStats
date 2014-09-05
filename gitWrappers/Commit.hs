@@ -64,12 +64,16 @@ instance Storable CGitSignature where
   sizeOf _ = 24
   alignment = sizeOf
 
+nameOffset = 0
+emailOffset = 4
+
 foreign import ccall git_commit_committer :: Commit -> IO (Ptr CGitSignature)
 
 commiterName :: Commit -> IO String
 -- assert (commit /= nullPtr)
 commiterName commit = do
-  result <- git_commit_committer commit
+  signature <- git_commit_committer commit
+  result <- peekByteOff signature nameOffset
   return ""
 
 commiterEmail :: Commit -> IO String
@@ -118,7 +122,8 @@ commiterEmail commit = do
 --  result <- git_commit_committer commit >>= peek
 --  peekCString . signatureTime $ result
 
+-}
 
 -- TODO: FIXME: git_signature_free
 
--}
+
