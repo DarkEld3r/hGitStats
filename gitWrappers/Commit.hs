@@ -72,6 +72,8 @@ emailOffset = 4
 
 foreign import ccall git_commit_committer :: Commit -> IO (Ptr CGitSignature)
 
+foreign import ccall git_signature_free :: Commit -> IO ()
+
 commiterName :: Commit -> IO String
 commiterName commit = assert (commit /= nullPtr) $ do
   signature <- git_commit_committer commit
