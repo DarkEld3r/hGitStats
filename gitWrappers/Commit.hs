@@ -77,6 +77,11 @@ foreign import ccall git_signature_free :: Ptr CGitSignature -> IO ()
 withCommitCommiter :: Commit -> (Ptr CGitSignature -> IO a) -> IO a
 withCommitCommiter commit = bracket (git_commit_committer commit) git_signature_free
 
+readSignatureString :: Ptr CGitSignature -> Int -> IO String
+readSignatureString signature offset = do
+  cName <- peekByteOff signature offset :: IO CString
+  peekCString cName
+
 commiterName :: Commit -> IO String
 commiterName commit = assert (commit /= nullPtr) $ do
   signature <- git_commit_committer commit
