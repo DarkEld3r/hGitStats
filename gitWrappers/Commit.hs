@@ -88,8 +88,6 @@ emailOffset :: Int
 emailOffset = 4
 
 committerEmail :: Commit -> IO String
--- assert (commit /= nullPtr)
 committerEmail commit = assert (commit /= nullPtr) $ do
-  signature <- git_commit_committer commit
-  cName <- peekByteOff signature emailOffset :: IO CString
-  peekCString cName
+  withCommitCommitter commit $ \committer -> do
+    readCommitterString committer emailOffset
