@@ -8,8 +8,8 @@ module Commit
   , commitFree
   , topologicalCommits
   , commitMessage
-  , commiterName
-  , commiterEmail
+  , committerName
+  , committerEmail
   ) where
 
 import Foreign.C.Types
@@ -64,33 +64,32 @@ instance Storable CGitSignature where
   sizeOf _ = 24
   alignment = sizeOf
 
-nameOffset :: Int
-nameOffset = 0
-
-emailOffset :: Int
-emailOffset = 4
-
 foreign import ccall git_commit_committer :: Commit -> IO (Ptr CGitSignature)
 
 foreign import ccall git_signature_free :: Ptr CGitSignature -> IO ()
 
-withCommitCommiter :: Commit -> (Ptr CGitSignature -> IO a) -> IO a
-withCommitCommiter commit = bracket (git_commit_committer commit) git_signature_free
+withCommitCommitter :: Commit -> (Ptr CGitSignature -> IO a) -> IO a
+withCommitCommitter commit = bracket (git_commit_committer commit) git_signature_free
 
-readSignatureString :: Ptr CGitSignature -> Int -> IO String
-readSignatureString signature offset = do
-  cName <- peekByteOff signature offset :: IO CString
+readCommitterString :: Ptr CGitSignature -> Int -> IO String
+readCommitterString committer offset = assert (committer /= nullPtr) $ do
+  cName <- peekByteOff committer offset :: IO CString
   peekCString cName
 
-commiterName :: Commit -> IO String
-commiterName commit = assert (commit /= nullPtr) $ do
-  signature <- git_commit_committer commit
-  cName <- peekByteOff signature nameOffset :: IO CString
-  peekCString cName
+nameOffset :: Int
+nameOffset = 0
 
-commiterEmail :: Commit -> IO String
+committerName :: Commit -> IO String
+committerName commit = assert (commit /= nullPtr) $ do
+  withCommitCommitter commit $ \committer -> do
+    readCommitterString committer nameOffset
+
+emailOffset :: Int
+emailOffset = 4
+
+committerEmail :: Commit -> IO String
 -- assert (commit /= nullPtr)
-commiterEmail commit = assert (commit /= nullPtr) $ do
+committerEmail commit = assert (commit /= nullPtr) $ do
   signature <- git_commit_committer commit
   cName <- peekByteOff signature emailOffset :: IO CString
   peekCString cName
