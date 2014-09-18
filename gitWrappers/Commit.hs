@@ -17,7 +17,7 @@ import Foreign.C.String
 import Foreign.Ptr
 import Foreign.Marshal.Alloc
 import Foreign.Storable
-import Control.Exception (assert)
+import Control.Exception (assert, bracket)
 
 import Common
 import Repository
@@ -72,7 +72,10 @@ emailOffset = 4
 
 foreign import ccall git_commit_committer :: Commit -> IO (Ptr CGitSignature)
 
-foreign import ccall git_signature_free :: Commit -> IO ()
+foreign import ccall git_signature_free :: Ptr CGitSignature -> IO ()
+
+withCommitCommiter :: Commit -> (Ptr CGitSignature -> IO a) -> IO a
+withCommitCommiter commit = bracket (git_commit_committer commit) git_signature_free
 
 commiterName :: Commit -> IO String
 commiterName commit = assert (commit /= nullPtr) $ do
