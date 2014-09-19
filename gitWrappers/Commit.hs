@@ -10,6 +10,7 @@ module Commit
   , commitMessage
   , committerName
   , committerEmail
+  , committerInfo
   ) where
 
 import Foreign.C.Types
@@ -91,3 +92,10 @@ committerEmail :: Commit -> IO String
 committerEmail commit = assert (commit /= nullPtr) $ do
   withCommitCommitter commit $ \committer -> do
     readCommitterString committer emailOffset
+
+committerInfo :: Commit -> IO (String, String)
+committerInfo commit = assert (commit /= nullPtr) $ do
+  withCommitCommitter commit $ \committer -> do
+    name <- readCommitterString committer nameOffset
+    email <- readCommitterString committer emailOffset
+    return (name, email)
