@@ -8,9 +8,9 @@ module Commit
   , commitFree
   , topologicalCommits
   , commitMessage
+  , committerInfo
   , committerName
   , committerEmail
-  , committerInfo
   ) where
 
 import Foreign.C.Types
@@ -19,6 +19,7 @@ import Foreign.Ptr
 import Foreign.Marshal.Alloc
 import Foreign.Storable
 import Control.Exception (assert, bracket)
+import Control.Applicative
 
 import Common
 import Repository
@@ -80,18 +81,8 @@ readCommitterString committer offset = assert (committer /= nullPtr) $ do
 nameOffset :: Int
 nameOffset = 0
 
-committerName :: Commit -> IO String
-committerName commit = assert (commit /= nullPtr) $ do
-  withCommitCommitter commit $ \committer -> do
-    readCommitterString committer nameOffset
-
 emailOffset :: Int
 emailOffset = 4
-
-committerEmail :: Commit -> IO String
-committerEmail commit = assert (commit /= nullPtr) $ do
-  withCommitCommitter commit $ \committer -> do
-    readCommitterString committer emailOffset
 
 committerInfo :: Commit -> IO (String, String)
 committerInfo commit = assert (commit /= nullPtr) $ do
@@ -99,3 +90,9 @@ committerInfo commit = assert (commit /= nullPtr) $ do
     name <- readCommitterString committer nameOffset
     email <- readCommitterString committer emailOffset
     return (name, email)
+
+committerName :: Commit -> IO String
+committerName commit = fst <$> (committerInfo commit)
+
+committerEmail :: Commit -> IO String
+committerEmail commit = snd <$> (committerInfo commit)
