@@ -47,6 +47,8 @@ printMessages commits = do
   putStrLn delimiter
   mapM commitMessage commits >>= mapM_ print
 
+-- TODO: hash-map?
+
 printStatistics :: [Commit] -> IO ()
 printStatistics commits = do
   putStrLn delimiter
