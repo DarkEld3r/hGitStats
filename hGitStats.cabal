@@ -26,6 +26,7 @@ executable hGitStats
 
   build-depends:       base ==4.6.*
                      , cmdargs
+                     , hashmap
 
   hs-source-dirs:      .
                        gitWrappers

@@ -4,6 +4,7 @@ module Main where
 
 import System.Console.CmdArgs
 import Control.Monad (when)
+import qualified Data.HashMap as HM
 
 import Repository
 import Commit
