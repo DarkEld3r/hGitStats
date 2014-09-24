@@ -48,7 +48,13 @@ printMessages commits = do
   putStrLn delimiter
   mapM commitMessage commits >>= mapM_ print
 
--- TODO: hash-map?
+processCommitsImpl :: [Commit] -> HM.Map String Int -> HM.Map String Int
+processCommitsImpl [] commitsMap = commitsMap
+processCommitsImpl [x] commitsMap = commitsMap
+processCommitsImpl commits commitsMap = commitsMap
+
+processCommits :: [Commit] -> HM.Map String Int
+processCommits commits = processCommitsImpl commits HM.empty
 
 printStatistics :: [Commit] -> IO ()
 printStatistics commits = do
