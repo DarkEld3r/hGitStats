@@ -53,6 +53,8 @@ printMessages commits = do
 printStatistics :: [Commit] -> IO ()
 printStatistics commits = do
   putStrLn delimiter
+--    let commitsMap = HM.empty
+--    print commitsMap
   -- TODO: FIXME:
   print commits
 
