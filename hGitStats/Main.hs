@@ -48,6 +48,12 @@ printMessages commits = do
   putStrLn delimiter
   mapM commitMessage commits >>= mapM_ print
 
+incrementCommitsCount :: Int -> Int -> Int
+incrementCommitsCount _ value = 1 + value
+
+updateMap :: String -> HM.Map String Int -> HM.Map String Int
+updateMap name commitsMap = HM.insertWith incrementCommitsCount name 1 commitsMap
+
 processCommitsImpl :: [Commit] -> HM.Map String Int -> HM.Map String Int
 processCommitsImpl [] commitsMap = commitsMap
 processCommitsImpl [x] commitsMap = commitsMap
