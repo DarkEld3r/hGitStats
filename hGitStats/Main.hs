@@ -52,15 +52,23 @@ incrementCommitsCount :: Int -> Int -> Int
 incrementCommitsCount _ value = 1 + value
 
 updateMap :: String -> HM.Map String Int -> HM.Map String Int
-updateMap name commitsMap = HM.insertWith incrementCommitsCount name 1 commitsMap
+updateMap author commitsMap = HM.insertWith incrementCommitsCount author 1 commitsMap
 
-processCommitsImpl :: [Commit] -> HM.Map String Int -> HM.Map String Int
-processCommitsImpl [] commitsMap = commitsMap
-processCommitsImpl [x] commitsMap = commitsMap
-processCommitsImpl commits commitsMap = commitsMap
+--updateMapCommit :: Commit -> HM.Map String Int -> HM.Map String Int
+--updateMapCommit commit commitsMap = do
+--  name <- committerName commit
+--  HM.empty
+--  updateMap name commitsMap
+--committerName commit >>= (flip (updateMap commitsMap))
+--updateMapCommit commit commitsMap = committerName commit >>= (flip (updateMap commitsMap))
 
-processCommits :: [Commit] -> HM.Map String Int
-processCommits commits = processCommitsImpl commits HM.empty
+--processCommits :: [Commit] -> HM.Map String Int -> HM.Map String Int
+--processCommits [] commitsMap = commitsMap
+--processCommits [x] commitsMap = commitsMap
+--processCommits commits commitsMap = commitsMap
+
+commitsAuthors :: [Commit] -> IO [String]
+commitsAuthors commits = mapM committerName commits
 
 printStatistics :: [Commit] -> IO ()
 printStatistics commits = do
