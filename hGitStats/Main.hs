@@ -66,7 +66,7 @@ printStatistics :: [Commit] -> IO ()
 printStatistics commits = do
   putStrLn delimiter
   authors <- commitsAuthors commits
-  print $ processAuthors authors HM.empty
+  mapM_ print (HM.toList $ processAuthors authors HM.empty)
 
 main :: IO ()
 main = do
