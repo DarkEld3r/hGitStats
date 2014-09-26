@@ -48,12 +48,6 @@ printMessages commits = do
   putStrLn delimiter
   mapM commitMessage commits >>= mapM_ print
 
-incrementCommitsCount :: Int -> Int -> Int
-incrementCommitsCount _ value = 1 + value
-
-updateMap :: String -> HM.Map String Int -> HM.Map String Int
-updateMap author commitsMap = HM.insertWith incrementCommitsCount author 1 commitsMap
-
 --updateMapCommit :: Commit -> HM.Map String Int -> HM.Map String Int
 --updateMapCommit commit commitsMap = do
 --  name <- committerName commit
@@ -70,9 +64,21 @@ updateMap author commitsMap = HM.insertWith incrementCommitsCount author 1 commi
 commitsAuthors :: [Commit] -> IO [String]
 commitsAuthors commits = mapM committerName commits
 
+incrementCommitsCount :: Int -> Int -> Int
+incrementCommitsCount _ value = 1 + value
+
+updateMap :: String -> HM.Map String Int -> HM.Map String Int
+updateMap author commitsMap = HM.insertWith incrementCommitsCount author 1 commitsMap
+
+processAuthors :: [String] -> HM.Map String Int -> HM.Map String Int
+processAuthors [] commitsMap = commitsMap
+processAuthors [x] commitsMap = updateMap x commitsMap
+processAuthors (x:xs) commitsMap = processAuthors xs (updateMap x commitsMap)
+
 printStatistics :: [Commit] -> IO ()
 printStatistics commits = do
   putStrLn delimiter
+  authors <- commitsAuthors commits
 --    let commitsMap = HM.empty
 --    print commitsMap
   -- TODO: FIXME:
