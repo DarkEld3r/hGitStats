@@ -66,10 +66,7 @@ printStatistics :: [Commit] -> IO ()
 printStatistics commits = do
   putStrLn delimiter
   authors <- commitsAuthors commits
---    let commitsMap = HM.empty
---    print commitsMap
-  -- TODO: FIXME:
-  print commits
+  print $ processAuthors authors HM.empty
 
 main :: IO ()
 main = do
