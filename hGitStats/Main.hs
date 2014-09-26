@@ -48,19 +48,6 @@ printMessages commits = do
   putStrLn delimiter
   mapM commitMessage commits >>= mapM_ print
 
---updateMapCommit :: Commit -> HM.Map String Int -> HM.Map String Int
---updateMapCommit commit commitsMap = do
---  name <- committerName commit
---  HM.empty
---  updateMap name commitsMap
---committerName commit >>= (flip (updateMap commitsMap))
---updateMapCommit commit commitsMap = committerName commit >>= (flip (updateMap commitsMap))
-
---processCommits :: [Commit] -> HM.Map String Int -> HM.Map String Int
---processCommits [] commitsMap = commitsMap
---processCommits [x] commitsMap = commitsMap
---processCommits commits commitsMap = commitsMap
-
 commitsAuthors :: [Commit] -> IO [String]
 commitsAuthors commits = mapM committerName commits
 
