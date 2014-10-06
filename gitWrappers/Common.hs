@@ -10,4 +10,4 @@ checkResult :: IO CInt -> String -> IO ()
 checkResult ioResult errorMessage = do
   result <- ioResult
   when (0 /= result) $ 
-    error $ errorMessage ++ " Error code = '" ++ (show result) ++ "'."  
+    error $ errorMessage ++ " Error code = '" ++ show result ++ "'."  

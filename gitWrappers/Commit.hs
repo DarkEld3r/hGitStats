@@ -34,8 +34,7 @@ foreign import ccall git_commit_lookup :: Ptr Commit -> Repository -> Oid -> IO 
 
 commitLookup :: Repository -> Oid -> IO Commit
 commitLookup repository oid = alloca $ \commit -> assert (repository /= nullPtr && oid /= nullPtr) $ do
-  checkResult (git_commit_lookup commit repository oid)
-    $ "git_commit_lookup failed."
+  checkResult (git_commit_lookup commit repository oid) "git_commit_lookup failed."
   peek commit
 
 commitsLookup :: Repository -> [Oid] -> IO [Commit]
@@ -45,12 +44,11 @@ commitsLookup repository oids = assert (repository /= nullPtr)
 foreign import ccall git_commit_free :: Commit -> IO ()
 
 commitFree :: Commit -> IO ()
-commitFree commit = do
-  git_commit_free commit
+commitFree commit = git_commit_free commit
 
 topologicalCommits :: Repository -> IO [Commit]
-topologicalCommits repository = assert (repository /= nullPtr) $ do
-  withTopologicalOids repository $ \oids -> do
+topologicalCommits repository = assert (repository /= nullPtr)
+  withTopologicalOids repository $ \oids ->
     commitsLookup repository oids
 
 foreign import ccall git_commit_message :: Commit -> IO CString
@@ -85,14 +83,14 @@ emailOffset :: Int
 emailOffset = 4
 
 committerInfo :: Commit -> IO (String, String)
-committerInfo commit = assert (commit /= nullPtr) $ do
+committerInfo commit = assert (commit /= nullPtr)
   withCommitCommitter commit $ \committer -> do
     name <- readCommitterString committer nameOffset
     email <- readCommitterString committer emailOffset
     return (name, email)
 
 committerName :: Commit -> IO String
-committerName commit = fst <$> (committerInfo commit)
+committerName commit = fst <$> committerInfo commit
 
 committerEmail :: Commit -> IO String
-committerEmail commit = snd <$> (committerInfo commit)
+committerEmail commit = snd <$> committerInfo commit

@@ -39,8 +39,7 @@ revwalkNew repository = alloca $ \revwalk -> assert (repository /= nullPtr) $ do
 foreign import ccall git_revwalk_free :: Revwalk -> IO ()
 
 revwalkFree :: Revwalk -> IO ()
-revwalkFree revwalk = do
-  git_revwalk_free revwalk
+revwalkFree revwalk = git_revwalk_free revwalk
 
 withRevwalk :: Repository -> (Revwalk -> IO a) -> IO a
 withRevwalk repository = bracket (revwalkNew repository) revwalkFree
@@ -59,13 +58,13 @@ data SortMode = NoSort
 
 
 revwalkSorting :: Revwalk -> SortMode -> IO ()
-revwalkSorting revwalk sortMode = assert (revwalk /= nullPtr) $ do
+revwalkSorting revwalk sortMode = assert (revwalk /= nullPtr)
   git_revwalk_sorting revwalk $ fromIntegral . fromEnum $ sortMode
 
 foreign import ccall git_revwalk_push :: Revwalk -> Oid -> IO CInt
 
 revwalkPush :: Revwalk -> Oid -> IO ()
-revwalkPush revwalk oid = assert (revwalk /= nullPtr && oid /= nullPtr) $ do
+revwalkPush revwalk oid = assert (revwalk /= nullPtr && oid /= nullPtr)
  checkResult (git_revwalk_push revwalk oid) "git_revwalk_push failed."
 
 foreign import ccall git_revwalk_next :: Oid -> Revwalk -> IO CInt
@@ -86,14 +85,14 @@ nextOids revwalk = assert (revwalk /= nullPtr) $ do
     Nothing  -> return []
 
 nextTopologicalOids :: Repository -> Oid -> IO [Oid]
-nextTopologicalOids repository oid = assert (repository /= nullPtr && oid /= nullPtr) $ do
+nextTopologicalOids repository oid = assert (repository /= nullPtr && oid /= nullPtr)
   withRevwalk repository $ \walker -> do
     revwalkSorting walker Topological
     revwalkPush walker oid
     nextOids walker
 
 topologicalOids :: Repository -> IO [Oid]
-topologicalOids repository = assert (repository /= nullPtr) $ do
+topologicalOids repository = assert (repository /= nullPtr)
   withHeadId repository (nextTopologicalOids repository)
 
 withTopologicalOids :: Repository -> ([Oid] -> IO a) -> IO a

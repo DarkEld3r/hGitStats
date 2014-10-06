@@ -29,8 +29,7 @@ oidSize :: Int
 oidSize = 20
 
 oidCreate :: IO Oid
-oidCreate = do
-  mallocBytes oidSize
+oidCreate = mallocBytes oidSize
 
 oidFree :: Oid -> IO ()
 oidFree oid =

@@ -35,8 +35,7 @@ repositoryOpen path = alloca $ \repository -> do
 foreign import ccall git_repository_free :: Repository -> IO ()
 
 repositoryFree :: Repository -> IO ()
-repositoryFree repository = do
-  git_repository_free repository
+repositoryFree repository = git_repository_free repository
 
 withRepositoryOpen :: String -> (Repository -> IO a) -> IO a
 withRepositoryOpen path = bracket (repositoryOpen path) repositoryFree
@@ -46,7 +45,7 @@ foreign import ccall git_repository_get_namespace :: Repository -> IO CString
 repositoryNamespace :: Repository -> IO String
 repositoryNamespace repository = assert (repository /= nullPtr) $ do
   result <- git_repository_get_namespace repository
-  if (result == nullPtr) 
+  if result == nullPtr
     then return ""
     else peekCString result
 
