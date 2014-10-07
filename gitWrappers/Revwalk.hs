@@ -39,7 +39,7 @@ revwalkNew repository = alloca $ \revwalk -> assert (repository /= nullPtr) $ do
 foreign import ccall git_revwalk_free :: Revwalk -> IO ()
 
 revwalkFree :: Revwalk -> IO ()
-revwalkFree revwalk = git_revwalk_free revwalk
+revwalkFree = git_revwalk_free
 
 withRevwalk :: Repository -> (Revwalk -> IO a) -> IO a
 withRevwalk repository = bracket (revwalkNew repository) revwalkFree

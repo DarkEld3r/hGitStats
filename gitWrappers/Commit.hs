@@ -38,13 +38,14 @@ commitLookup repository oid = alloca $ \commit -> assert (repository /= nullPtr 
   peek commit
 
 commitsLookup :: Repository -> [Oid] -> IO [Commit]
-commitsLookup repository oids = assert (repository /= nullPtr)
-  mapM (commitLookup repository) oids  
+commitsLookup repository = 
+  assert (repository /= nullPtr)
+  mapM (commitLookup repository)
 
 foreign import ccall git_commit_free :: Commit -> IO ()
 
 commitFree :: Commit -> IO ()
-commitFree commit = git_commit_free commit
+commitFree = git_commit_free
 
 topologicalCommits :: Repository -> IO [Commit]
 topologicalCommits repository = assert (repository /= nullPtr)

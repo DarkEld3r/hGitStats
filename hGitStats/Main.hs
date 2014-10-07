@@ -49,13 +49,13 @@ printMessages commits = do
   mapM commitMessage commits >>= mapM_ print
 
 commitsAuthors :: [Commit] -> IO [String]
-commitsAuthors commits = mapM committerName commits
+commitsAuthors = mapM committerName
 
 incrementCommitsCount :: Int -> Int -> Int
 incrementCommitsCount _ value = 1 + value
 
 updateMap :: String -> HM.Map String Int -> HM.Map String Int
-updateMap author commitsMap = HM.insertWith incrementCommitsCount author 1 commitsMap
+updateMap author = HM.insertWith incrementCommitsCount author 1
 
 processAuthors :: [String] -> HM.Map String Int -> HM.Map String Int
 processAuthors [] commitsMap = commitsMap

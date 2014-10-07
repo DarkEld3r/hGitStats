@@ -35,7 +35,7 @@ repositoryOpen path = alloca $ \repository -> do
 foreign import ccall git_repository_free :: Repository -> IO ()
 
 repositoryFree :: Repository -> IO ()
-repositoryFree repository = git_repository_free repository
+repositoryFree = git_repository_free
 
 withRepositoryOpen :: String -> (Repository -> IO a) -> IO a
 withRepositoryOpen path = bracket (repositoryOpen path) repositoryFree

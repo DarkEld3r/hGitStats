@@ -32,8 +32,7 @@ oidCreate :: IO Oid
 oidCreate = mallocBytes oidSize
 
 oidFree :: Oid -> IO ()
-oidFree oid =
-  free oid
+oidFree = free
 
 withOid :: (Oid -> IO a) -> IO a
 withOid = bracket oidCreate oidFree
